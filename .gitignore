@@ -433,3 +433,5 @@ coverage/
 
 \.DS_Store
 vsix/
+
+TodayTix/

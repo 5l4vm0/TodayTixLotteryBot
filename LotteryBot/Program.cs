@@ -2,6 +2,8 @@
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Android;
 using OpenQA.Selenium.Appium.Enums;
+using System.Threading;
+
 
 namespace LotteryBot
 {
@@ -14,8 +16,8 @@ namespace LotteryBot
         static void Main(string[] args)
         {
             _driver = SetUp();
-
-            TestBattery();
+            
+            TodayTix();
 
             TearDown();
         }
@@ -30,8 +32,11 @@ namespace LotteryBot
                 DeviceName = "Android Emulator",
             };
 
-            driverOptions.AddAdditionalAppiumOption("appPackage", "com.android.settings");
-            driverOptions.AddAdditionalAppiumOption("appActivity", ".Settings");
+
+
+            driverOptions.AddAdditionalAppiumOption("appPackage", "com.todaytix.TodayTix");
+            driverOptions.AddAdditionalAppiumOption("appActivity", ".activity.MainActivity");
+
             // NoReset assumes the app com.google.android is preinstalled on the emulator
             driverOptions.AddAdditionalAppiumOption("noReset", true);
 
@@ -40,10 +45,36 @@ namespace LotteryBot
             return driver;
         }
 
-        static void TestBattery()
+        static void PrintAllElements() {
+            if(_driver.FindElements(By.XPath("//*")) != null)
+            {
+                var elements = _driver.FindElements(By.XPath("//*"));
+                foreach(var element in elements)
+                {
+                    Console.WriteLine(element.Text);
+                }
+            }
+        }
+
+
+        static void TodayTix()
         {
-            _driver.StartActivity("com.android.settings", ".Settings");
-            _driver.FindElement(By.XPath("//*[@text='Battery']")).Click();
+            _driver.StartActivity("com.todaytix.TodayTix", ".activity.MainActivity");
+
+
+            _driver.FindElement(By.XPath("//*[@text='Account']")).Click();
+
+            if(_driver.FindElement(By.XPath("//*[@text='Email address']"))!= null)
+            {
+                var email = _driver.FindElement(By.XPath("//*[@text='Email address']"));
+                email.Click();  
+                email.Clear();  
+                Console.WriteLine("Sleep for 2 seconds.");
+                Thread.Sleep(2000);
+                email.SendKeys("usvienaspirmas@gmail.com");
+            }
+            
+            
         }
 
         static public void TearDown()
