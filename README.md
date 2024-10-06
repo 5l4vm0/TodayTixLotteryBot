@@ -6,6 +6,8 @@
 
 ### Setup
 
+#### Test that appium works
+
 * Run appium server
 
     ```
@@ -13,15 +15,18 @@
     appium
     ```
 
-* Run Android virtual device (or connect your real device)
+* Run Android virtual device
     * I had to enable developer settings in the emulated device
-    *  s `adb devices` should return your emulated/connected
+    * `adb devices` should return your emulated
 
     ```
     adb devices
     List of devices attached
     emulator-5554   device
     ```
+
+* Install TodayTix APK on the emulated/connected device
+    * If installing onto the emulated device, you can use the `adb install-multiple <multiple paths to apks>`/`adb install <path to apk>` commands
 
 * Test that it works as expected
 
@@ -40,4 +45,12 @@
     A total of 1 test files matched the specified pattern.
 
     Passed!  - Failed:     0, Passed:     1, Skipped:     0, Total:     1, Duration: 2 s - appiumtest.dll (net8.0)
+    ```
+
+#### Running the lottery bot
+
+* Make sure that you have your emulated device running
+    ```
+    # from LotteryBot/LotteryBot
+    dotnet run
     ```
