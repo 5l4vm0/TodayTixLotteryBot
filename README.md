@@ -54,3 +54,21 @@
     # from LotteryBot/LotteryBot
     dotnet run
     ```
+
+### Next steps
+
+#### Sign-up
+* Click "Account" in bottom right corner
+* Type in email address
+* Click Continue
+* Type "First name" & "Last name"
+* Click "Send link"
+* Check email for subject "Your one-time access code: xxxxxx" and extract the code from the subject
+* Type in code into TodayTix
+* Reject "App activity usage" by clicking "Rejact all"
+* Click on "Search"
+* Click on "Search events in London"
+* Type "Harry Potter"
+* Click "Harry Potter And The Cursed Child"
+* Click Set Alert
+...
