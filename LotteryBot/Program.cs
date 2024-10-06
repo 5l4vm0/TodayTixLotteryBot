@@ -12,19 +12,19 @@ namespace LotteryBot
 {
     class Program
     {
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         private static AndroidDriver _driver;
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+        GmailMonitor _gmailMonitor;
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
+            _gmailMonitor = new GmailMonitor();
             _driver = SetUp();
             
             //TodayTixSignUp();
 
             TodayTixSearchEvent();
 
-            TearDown();
+            // TearDown();
         }
 
 

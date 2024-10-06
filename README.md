@@ -3,6 +3,8 @@
 * Install Appium - https://appium.io/docs/en/2.11/quickstart/
     * After installing JDK 9, and Android Studio set the ANDROID_HOME and JAVA_HOME directories to the installed paths
     * From Android Studio, install Android SDK Command Line from Android Studio
+* Google Cloud Platform (GCP) account
+
 
 ### Setup
 
@@ -46,6 +48,19 @@
 
     Passed!  - Failed:     0, Passed:     1, Skipped:     0, Total:     1, Duration: 2 s - appiumtest.dll (net8.0)
     ```
+
+
+#### Setup GCP Gmail API Credentials
+
+* Go to Google Cloud Platform (GCP)
+* Enable GCP Gmail API in API and Services
+* Go to Credentials > Create Credentials > OAuth Client ID
+* Give it appropriate permissions to read the emails and metadata
+* Create the credentials
+* Download credentials client_secret.json (It will be named something like client_secret_123456789-blahblahblahblah.apps.googleusercontent.com.json, rename it to client_secret.json)
+* Put the client_secret.json inside `LotteryBot\LotteryBot\credentials\client_secret.json`
+
+
 
 #### Running the lottery bot
 
