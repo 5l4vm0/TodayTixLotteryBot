@@ -41,7 +41,7 @@ class GmailMonitor
 
     public async Task ListEmails()
     {
-        
+
 
         // List the most recent emails
         ListMessagesResponse response = await _service.Users.Messages.List("me").ExecuteAsync();

@@ -17,7 +17,7 @@ namespace LotteryBot
         {
             _gmailMonitor = new GmailMonitor();
             _gmailMonitor.ListEmails().Wait();
-            
+
             _driver = SetUp();
 
             //TodayTixSignUp();
@@ -31,7 +31,8 @@ namespace LotteryBot
         static AndroidDriver SetUp()
         {
             var serverUri = new Uri(Environment.GetEnvironmentVariable("APPIUM_HOST") ?? "http://127.0.0.1:4723/");
-            var driverOptions = new AppiumOptions() {
+            var driverOptions = new AppiumOptions()
+            {
                 AutomationName = AutomationName.AndroidUIAutomator2,
                 PlatformName = "Android",
                 DeviceName = "Android Emulator",
@@ -50,11 +51,12 @@ namespace LotteryBot
             return driver;
         }
 
-        static void PrintAllElements() {
-            if(_driver.FindElements(By.XPath("//*")) != null)
+        static void PrintAllElements()
+        {
+            if (_driver.FindElements(By.XPath("//*")) != null)
             {
                 var elements = _driver.FindElements(By.XPath("//*"));
-                foreach(var element in elements)
+                foreach (var element in elements)
                 {
                     Console.WriteLine(element.Text);
                 }
@@ -67,7 +69,7 @@ namespace LotteryBot
             var allElements = _driver.FindElements(By.XPath("//*"));
 
             Console.WriteLine("Visible Widgets:");
-            
+
             // Loop through each element and print relevant attributes
             foreach (var element in allElements)
             {
@@ -95,9 +97,9 @@ namespace LotteryBot
 
             //Click on Accont tab
             _driver.FindElement(By.XPath("//*[@text='Account']")).Click();
-            
+
             //Find Email address field, type in email, and click continue
-            if(_driver.FindElement(By.XPath("(//android.widget.EditText)[1]")) != null)
+            if (_driver.FindElement(By.XPath("(//android.widget.EditText)[1]")) != null)
             {
                 var editText = _driver.FindElement(By.XPath("(//android.widget.EditText)[1]"));
                 editText.Click();
@@ -108,7 +110,7 @@ namespace LotteryBot
             }
 
             //Find name test field, type in first name and second name, and click send link
-            if(_driver.FindElement(By.XPath("(//android.widget.EditText)[1]")) != null)
+            if (_driver.FindElement(By.XPath("(//android.widget.EditText)[1]")) != null)
             {
                 var firstName = _driver.FindElement(By.XPath("(//android.widget.EditText)[1]"));
                 firstName.Click();
@@ -129,7 +131,7 @@ namespace LotteryBot
             //Click on Reject all for app activity usage
             try
             {
-                if(_driver.FindElement(By.XPath("(//*[@text='Reject all'])")) != null)
+                if (_driver.FindElement(By.XPath("(//*[@text='Reject all'])")) != null)
                 {
                     var rejectButton = _driver.FindElement(By.XPath("(//*[@text='Reject all'])"));
                     rejectButton.Click();
@@ -139,7 +141,7 @@ namespace LotteryBot
             {
                 Console.WriteLine("No reject button found");
             }
-            
+
         }
 
 
@@ -149,7 +151,7 @@ namespace LotteryBot
             _driver.FindElement(By.XPath("//*[@text='Search']")).Click();
 
             //Type in Harry Potter in search bar
-            if(_driver.FindElement(By.XPath("(//android.widget.EditText)[1]")) != null)
+            if (_driver.FindElement(By.XPath("(//android.widget.EditText)[1]")) != null)
             {
                 var searchBar = _driver.FindElement(By.XPath("(//android.widget.EditText)[1]"));
                 searchBar.SendKeys("Harry Potter");
@@ -157,7 +159,7 @@ namespace LotteryBot
 
             try
             {
-                if(_driver.FindElement(By.Id("com.todaytix.TodayTix:id/show_name")) != null)
+                if (_driver.FindElement(By.Id("com.todaytix.TodayTix:id/show_name")) != null)
                 {
                     var show = _driver.FindElement(By.Id("com.todaytix.TodayTix:id/show_name"));
                     show.Click();
@@ -168,13 +170,13 @@ namespace LotteryBot
                 Console.WriteLine("No show found");
             }
 
-        
+
             ScrollUntilElementIsFound(_driver, "£40 Friday Forty");
-            if(_driver.FindElement(By.XPath("//*[@text='Set alert']")) != null)
-           {
-                
+            if (_driver.FindElement(By.XPath("//*[@text='Set alert']")) != null)
+            {
+
                 _driver.FindElement(By.XPath("//*[@text='Set alert']")).Click();
-           }
+            }
         }
 
         //Scroll down a bit
@@ -184,17 +186,17 @@ namespace LotteryBot
             int attempt = 0;
 
             int maxAttempts = 5;
-            
-            while(!elementFound && attempt < maxAttempts)
+
+            while (!elementFound && attempt < maxAttempts)
             {
-                
+
                 try
                 {
                     var element = driver.FindElement(By.XPath($"//*[@text='{elementText}']"));
                     Console.WriteLine($"Element found: {elementText}");
                     elementFound = true;
-                        Actions action = new Actions (driver);
-                        action.DragAndDropToOffset(element,0,-500).Perform();
+                    Actions action = new Actions(driver);
+                    action.DragAndDropToOffset(element, 0, -500).Perform();
                 }
                 catch
                 {
