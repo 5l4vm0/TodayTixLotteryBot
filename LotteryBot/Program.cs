@@ -3,6 +3,8 @@ using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Android;
 using OpenQA.Selenium.Appium.Enums;
 using System.Threading;
+using OpenQA.Selenium.Appium.MultiTouch;
+using OpenQA.Selenium.Appium.Interactions;   // For PointerInput (W3C Actions API)
 
 
 namespace LotteryBot
@@ -17,7 +19,7 @@ namespace LotteryBot
         {
             _driver = SetUp();
             
-            TodayTixSignUp();
+            //TodayTixSignUp();
 
             TodayTixSearchEvent();
 
@@ -140,7 +142,75 @@ namespace LotteryBot
         }
 
 
-        
+        static void TodayTixSearchEvent()
+        {
+            //Click on Accont tab
+            _driver.FindElement(By.XPath("//*[@text='Search']")).Click();
+
+            //Type in Harry Potter in search bar
+            if(_driver.FindElement(By.XPath("(//android.widget.EditText)[1]")) != null)
+            {
+                var searchBar = _driver.FindElement(By.XPath("(//android.widget.EditText)[1]"));
+                searchBar.SendKeys("Harry Potter");
+            }
+
+            try
+            {
+                if(_driver.FindElement(By.Id("com.todaytix.TodayTix:id/show_name")) != null)
+                {
+                    var show = _driver.FindElement(By.Id("com.todaytix.TodayTix:id/show_name"));
+                    show.Click();
+                }
+            }
+            catch
+            {
+                Console.WriteLine("No show found");
+            }
+
+        //    if(_driver.FindElement(By.XPath("//*[@text='Set alert']")) != null)
+        //    {
+                
+        //         _driver.FindElement(By.XPath("//*[@text='Set alert']")).Click();
+        //    }
+            ScrollUntilElementIsFound(_driver, "Set alert");
+            
+        }
+
+        static public void ScrollUntilElementIsFound(AndroidDriver driver, string elementText)
+        {
+            bool elementFound = false;
+            int attempt = 0;
+
+            int maxAttempts = 5;
+            int scrollAmount = 100;
+
+            while(!elementFound && attempt < maxAttempts)
+            {
+                try
+                {
+                    var element = driver.FindElement(By.XPath($"//*[@text='{elementText}']"));
+                    Console.WriteLine($"Element found: {elementText}");
+                    elementFound = true;
+                        
+                }
+                catch
+                {
+                    Console.WriteLine($"Element not found, scrolling down");
+
+                    var scrollAction = new Actions(driver)
+                    .MoveToElement(elementText, 0, scrollAmount) // start from top left
+                    .ClickAndHold()
+                    .Release()  
+                    .Build();
+
+                    scrollAction.Perform();
+                }
+
+                attempt++;
+                Thread.Sleep(1000);
+            }
+        }
+
 
         static public void TearDown()
         {
