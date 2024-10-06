@@ -3,8 +3,9 @@ using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Android;
 using OpenQA.Selenium.Appium.Enums;
 using System.Threading;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Appium.MultiTouch;
-using OpenQA.Selenium.Appium.Interactions;   // For PointerInput (W3C Actions API)
+
 
 
 namespace LotteryBot
@@ -167,43 +168,38 @@ namespace LotteryBot
                 Console.WriteLine("No show found");
             }
 
-        //    if(_driver.FindElement(By.XPath("//*[@text='Set alert']")) != null)
-        //    {
+        
+            ScrollUntilElementIsFound(_driver, "£40 Friday Forty");
+            if(_driver.FindElement(By.XPath("//*[@text='Set alert']")) != null)
+           {
                 
-        //         _driver.FindElement(By.XPath("//*[@text='Set alert']")).Click();
-        //    }
-            ScrollUntilElementIsFound(_driver, "Set alert");
-            
+                _driver.FindElement(By.XPath("//*[@text='Set alert']")).Click();
+           }
         }
 
+        //Scroll down a bit
         static public void ScrollUntilElementIsFound(AndroidDriver driver, string elementText)
         {
             bool elementFound = false;
             int attempt = 0;
 
             int maxAttempts = 5;
-            int scrollAmount = 100;
-
+            
             while(!elementFound && attempt < maxAttempts)
             {
+                
                 try
                 {
                     var element = driver.FindElement(By.XPath($"//*[@text='{elementText}']"));
                     Console.WriteLine($"Element found: {elementText}");
                     elementFound = true;
-                        
+                        Actions action = new Actions (driver);
+                        action.DragAndDropToOffset(element,0,-500).Perform();
                 }
                 catch
                 {
                     Console.WriteLine($"Element not found, scrolling down");
 
-                    var scrollAction = new Actions(driver)
-                    .MoveToElement(elementText, 0, scrollAmount) // start from top left
-                    .ClickAndHold()
-                    .Release()  
-                    .Build();
-
-                    scrollAction.Perform();
                 }
 
                 attempt++;
