@@ -2,9 +2,7 @@
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Android;
 using OpenQA.Selenium.Appium.Enums;
-using System.Threading;
 using OpenQA.Selenium.Interactions;
-using OpenQA.Selenium.Appium.MultiTouch;
 
 
 
@@ -13,18 +11,20 @@ namespace LotteryBot
     class Program
     {
         private static AndroidDriver _driver;
-        GmailMonitor _gmailMonitor;
+        private static GmailMonitor _gmailMonitor;
 
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
             _gmailMonitor = new GmailMonitor();
-            _driver = SetUp();
+            _gmailMonitor.ListEmails().Wait();
             
+            _driver = SetUp();
+
             //TodayTixSignUp();
 
             TodayTixSearchEvent();
 
-            // TearDown();
+            TearDown();
         }
 
 
