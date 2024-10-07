@@ -13,16 +13,18 @@ namespace LotteryBot
         private static AndroidDriver _driver;
         private static GmailMonitor _gmailMonitor;
 
+        private static string _emailAddress = "usvienaspirmas+test003";
+        private static string _code;
+
         static void Main(string[] args)
         {
             _gmailMonitor = new GmailMonitor();
-            _gmailMonitor.ListEmails().Wait();
 
             _driver = SetUp();
 
-            //TodayTixSignUp();
+            TodayTixSignUp();
 
-            TodayTixSearchEvent();
+            //TodayTixSearchEvent();
 
             TearDown();
         }
@@ -103,7 +105,7 @@ namespace LotteryBot
             {
                 var editText = _driver.FindElement(By.XPath("(//android.widget.EditText)[1]"));
                 editText.Click();
-                editText.SendKeys("usvienaspirmas+test001@gmail.com");
+                editText.SendKeys(_emailAddress + "@gmail.com");
 
                 var continueButton = _driver.FindElement(By.XPath("//*[@text='Continue']"));
                 continueButton.Click();
@@ -125,8 +127,11 @@ namespace LotteryBot
             }
 
             //TODO: get code from email and type it in
-            Console.WriteLine("Sleep for 20sec");
-            Thread.Sleep(20000);
+
+            Console.WriteLine("Sleep for 5sec");
+            Thread.Sleep(5000);
+            GetSignUpCode().Wait();
+            TypeInSignUpCode();
 
             //Click on Reject all for app activity usage
             try
@@ -209,7 +214,20 @@ namespace LotteryBot
             }
         }
 
+        static public async Task GetSignUpCode()
+        {
+            _code = await _gmailMonitor.GetCodeFromEmail(_emailAddress);
+        }
 
+        static public void TypeInSignUpCode()
+        {
+            if (_driver.FindElement(By.XPath("(//android.widget.EditText)[1]")) != null)
+            {
+                var editText = _driver.FindElement(By.XPath("(//android.widget.EditText)[1]"));
+                editText.Click();
+                editText.SendKeys(_code);
+            }
+        }
         static public void TearDown()
         {
             _driver.Dispose();
