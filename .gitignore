@@ -437,3 +437,5 @@ vsix/
 # LotteryBot
 TodayTix/
 LotteryBot/credentials/client_secret.json
+
+LotteryBot/Gmail.Api.Auth.Store
