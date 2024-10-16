@@ -1,4 +1,6 @@
-﻿using OpenQA.Selenium;
+﻿using System.Data;
+using System.Net;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Android;
 using OpenQA.Selenium.Appium.Enums;
@@ -13,20 +15,24 @@ namespace LotteryBot
         private static AndroidDriver _driver;
         private static GmailMonitor _gmailMonitor;
 
-        private static string _emailAddress = "usvienaspirmas+test004";
+        private static int _attempt = 6;
+        private static string _emailAddress = "usvienaspirmas+test";
         private static string _code;
 
         static void Main(string[] args)
         {
             _gmailMonitor = new GmailMonitor();
+            _emailAddress = $"{_emailAddress}{_attempt:000}";
 
             _driver = SetUp();
 
-            //TodayTixSignUp();
+            TodayTixSignUp();
 
-            //TodayTixSearchEvent();
+            TodayTixSearchEvent();
 
             EnterLottery();
+
+            LogOut();
 
             TearDown();
         }
@@ -178,7 +184,7 @@ namespace LotteryBot
             }
 
 
-            ScrollUntilElementIsFound(_driver, "£40 Friday Forty");
+            ScrollUntilElementIsFound(_driver, "£40 Friday Forty", -500);
             try
             {
                 if (_driver.FindElement(By.XPath("//*[@text='Enter Lottery']")) != null)
@@ -199,7 +205,7 @@ namespace LotteryBot
         }
 
         //Scroll down a bit
-        static public void ScrollUntilElementIsFound(AndroidDriver driver, string elementText)
+        static public void ScrollUntilElementIsFound(AndroidDriver driver, string elementText, int scrollDistance)
         {
             bool elementFound = false;
             int attempt = 0;
@@ -215,7 +221,7 @@ namespace LotteryBot
                     Console.WriteLine($"Element found: {elementText}");
                     elementFound = true;
                     Actions action = new Actions(driver);
-                    action.DragAndDropToOffset(element, 0, -500).Perform();
+                    action.DragAndDropToOffset(element, 0, scrollDistance).Perform();
                 }
                 catch
                 {
@@ -260,25 +266,46 @@ namespace LotteryBot
 
             _driver.FindElement(By.XPath("//*[@text='Next']")).Click();
 
+            //Enter email address
             var emailAddress = _driver.FindElement(By.XPath("(//android.widget.EditText)[2]"));
             emailAddress.Click();
             emailAddress.SendKeys(_emailAddress + "@gmail.com");
 
+            //Enter phone country code
             _driver.FindElement(By.XPath("(//android.widget.Spinner)[1]")).Click();
-
             var phoneCode = _driver.FindElement(By.XPath("(//*[@text='GB +44'])"));
             phoneCode.Click();
 
+            //Enter phone number
             var phoneNumber = _driver.FindElement(By.XPath("(//android.widget.EditText)[3]"));
             phoneNumber.Click();
             long basePhoneNum = 7891234567;
-            phoneNumber.SendKeys("0" + basePhoneNum.ToString());
+            phoneNumber.SendKeys("0" + (basePhoneNum + _attempt).ToString());
 
-            PrintVisibleWidgets();
+            //Click on enter lottery
             _driver.FindElement(By.XPath("(//*[@text='Enter'])")).Click();
+
+            //Click on close pop up menu
+            _driver.FindElement(By.Id("com.todaytix.TodayTix:id/close_button")).Click();
         }
 
+        static public void LogOut()
+        {
+            //Drag text up 1000 pixels
+            ScrollUntilElementIsFound(_driver, "£40 Friday Forty", 1000);
 
+            _driver.FindElement(By.Id("com.todaytix.TodayTix:id/back_button")).Click();
+            Thread.Sleep(2000);
+            _driver.HideKeyboard();
+            _driver.FindElement(By.XPath("//*[@text='Account']")).Click();
+
+            //Click on Account Settings
+            _driver.FindElement(By.XPath("//*[@content-desc='Account Settings icon']")).Click();
+
+            ScrollUntilElementIsFound(_driver, "Full name", -1000);
+
+            _driver.FindElement(By.XPath("//*[@text='Log out']")).Click();
+        }
         static public void TearDown()
         {
             _driver.Dispose();
