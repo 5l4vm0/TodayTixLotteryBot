@@ -13,7 +13,7 @@ namespace LotteryBot
         private static AndroidDriver _driver;
         private static GmailMonitor _gmailMonitor;
 
-        private static string _emailAddress = "usvienaspirmas+test003";
+        private static string _emailAddress = "usvienaspirmas+test004";
         private static string _code;
 
         static void Main(string[] args)
@@ -22,9 +22,11 @@ namespace LotteryBot
 
             _driver = SetUp();
 
-            TodayTixSignUp();
+            //TodayTixSignUp();
 
             //TodayTixSearchEvent();
+
+            EnterLottery();
 
             TearDown();
         }
@@ -177,11 +179,23 @@ namespace LotteryBot
 
 
             ScrollUntilElementIsFound(_driver, "£40 Friday Forty");
-            if (_driver.FindElement(By.XPath("//*[@text='Set alert']")) != null)
+            try
             {
+                if (_driver.FindElement(By.XPath("//*[@text='Enter Lottery']")) != null)
+                {
+                    _driver.FindElement(By.XPath("//*[@text='Enter Lottery']")).Click();
+                }
 
-                _driver.FindElement(By.XPath("//*[@text='Set alert']")).Click();
+                if (_driver.FindElement(By.XPath("//*[@text='Set alert']")) != null)
+                {
+                    _driver.FindElement(By.XPath("//*[@text='Set alert']")).Click();
+                }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
         }
 
         //Scroll down a bit
@@ -228,6 +242,43 @@ namespace LotteryBot
                 editText.SendKeys(_code);
             }
         }
+
+        static public void EnterLottery()
+        {
+            //Select 2 tickets
+            if (_driver.FindElement(By.XPath("(//*[@text='2'])")) != null)
+            {
+                var twoTickets = _driver.FindElement(By.XPath("(//*[@text='2'])"));
+                twoTickets.Click();
+            }
+
+            //Untick weekdays
+            for (int i = 0; i <= 1; i++)
+            {
+                _driver.FindElements(By.Id("com.todaytix.TodayTix:id/date_label"))[i].Click();
+            }
+
+            _driver.FindElement(By.XPath("//*[@text='Next']")).Click();
+
+            var emailAddress = _driver.FindElement(By.XPath("(//android.widget.EditText)[2]"));
+            emailAddress.Click();
+            emailAddress.SendKeys(_emailAddress + "@gmail.com");
+
+            _driver.FindElement(By.XPath("(//android.widget.Spinner)[1]")).Click();
+
+            var phoneCode = _driver.FindElement(By.XPath("(//*[@text='GB +44'])"));
+            phoneCode.Click();
+
+            var phoneNumber = _driver.FindElement(By.XPath("(//android.widget.EditText)[3]"));
+            phoneNumber.Click();
+            long basePhoneNum = 7891234567;
+            phoneNumber.SendKeys("0" + basePhoneNum.ToString());
+
+            PrintVisibleWidgets();
+            _driver.FindElement(By.XPath("(//*[@text='Enter'])")).Click();
+        }
+
+
         static public void TearDown()
         {
             _driver.Dispose();
