@@ -15,28 +15,40 @@ namespace LotteryBot
         private static AndroidDriver _driver;
         private static GmailMonitor _gmailMonitor;
 
-        private static int _attempt = 6;
+        private static int _singUpAmount = 3;
+        private static int _attemptEmailNum = 14;
         private static string _emailAddress = "usvienaspirmas+test";
         private static string _code;
 
         static void Main(string[] args)
         {
             _gmailMonitor = new GmailMonitor();
-            _emailAddress = $"{_emailAddress}{_attempt:000}";
+
 
             _driver = SetUp();
 
-            TodayTixSignUp();
-
-            TodayTixSearchEvent();
-
-            EnterLottery();
-
-            LogOut();
+            SignUpForTicketsLoop();
 
             TearDown();
         }
 
+        static void SignUpForTicketsLoop()
+        {
+            for (int i = 0; i < _singUpAmount; i++)
+            {
+                _emailAddress = "usvienaspirmas+test";
+                _emailAddress = $"{_emailAddress}{_attemptEmailNum:000}";
+                TodayTixSignUp();
+
+                TodayTixSearchEvent();
+
+                EnterLottery();
+
+                LogOut();
+
+                _attemptEmailNum++;
+            }
+        }
 
         static AndroidDriver SetUp()
         {
@@ -56,7 +68,7 @@ namespace LotteryBot
             // NoReset assumes the app com.google.android is preinstalled on the emulator
             driverOptions.AddAdditionalAppiumOption("noReset", true);
 
-            var driver = new AndroidDriver(serverUri, driverOptions, TimeSpan.FromSeconds(180));
+            var driver = new AndroidDriver(serverUri, driverOptions, TimeSpan.FromSeconds(1000));
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
             return driver;
         }
@@ -104,7 +116,7 @@ namespace LotteryBot
         {
             //Click on TodayTix app
             _driver.StartActivity("com.todaytix.TodayTix", ".activity.MainActivity");
-
+            Thread.Sleep(1000);
             //Click on Accont tab
             _driver.FindElement(By.XPath("//*[@text='Account']")).Click();
 
@@ -251,6 +263,7 @@ namespace LotteryBot
 
         static public void EnterLottery()
         {
+
             //Select 2 tickets
             if (_driver.FindElement(By.XPath("(//*[@text='2'])")) != null)
             {
@@ -280,7 +293,7 @@ namespace LotteryBot
             var phoneNumber = _driver.FindElement(By.XPath("(//android.widget.EditText)[3]"));
             phoneNumber.Click();
             long basePhoneNum = 7891234567;
-            phoneNumber.SendKeys("0" + (basePhoneNum + _attempt).ToString());
+            phoneNumber.SendKeys("0" + (basePhoneNum + _attemptEmailNum).ToString());
 
             //Click on enter lottery
             _driver.FindElement(By.XPath("(//*[@text='Enter'])")).Click();
@@ -305,6 +318,7 @@ namespace LotteryBot
             ScrollUntilElementIsFound(_driver, "Full name", -1000);
 
             _driver.FindElement(By.XPath("//*[@text='Log out']")).Click();
+            Thread.Sleep(2000);
         }
         static public void TearDown()
         {
