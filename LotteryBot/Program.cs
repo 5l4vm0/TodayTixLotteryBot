@@ -15,8 +15,8 @@ namespace LotteryBot
         private static AndroidDriver _driver;
         private static GmailMonitor _gmailMonitor;
 
-        private static int _singUpAmount = 3;
-        private static int _attemptEmailNum = 14;
+        private static int _singUpAmount = 10;
+        private static int _attemptEmailNum = 45;
         private static string _emailAddress = "usvienaspirmas+test";
         private static string _code;
 
@@ -38,6 +38,7 @@ namespace LotteryBot
             {
                 _emailAddress = "usvienaspirmas+test";
                 _emailAddress = $"{_emailAddress}{_attemptEmailNum:000}";
+                Console.WriteLine($"StartingSignUP, Attemp:{i + 1}, email:{_attemptEmailNum}");
                 TodayTixSignUp();
 
                 TodayTixSearchEvent();
@@ -45,7 +46,7 @@ namespace LotteryBot
                 EnterLottery();
 
                 LogOut();
-
+                Console.WriteLine($"FinsishedSignUP, Attemp:{i + 1}, email:{_attemptEmailNum}");
                 _attemptEmailNum++;
             }
         }
@@ -68,7 +69,7 @@ namespace LotteryBot
             // NoReset assumes the app com.google.android is preinstalled on the emulator
             driverOptions.AddAdditionalAppiumOption("noReset", true);
 
-            var driver = new AndroidDriver(serverUri, driverOptions, TimeSpan.FromSeconds(1000));
+            var driver = new AndroidDriver(serverUri, driverOptions);
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
             return driver;
         }
@@ -149,7 +150,7 @@ namespace LotteryBot
             //TODO: get code from email and type it in
 
             Console.WriteLine("Sleep for 5sec");
-            Thread.Sleep(5000);
+            Thread.Sleep(10000);
             GetSignUpCode().Wait();
             TypeInSignUpCode();
 
@@ -318,6 +319,7 @@ namespace LotteryBot
             ScrollUntilElementIsFound(_driver, "Full name", -1000);
 
             _driver.FindElement(By.XPath("//*[@text='Log out']")).Click();
+
             Thread.Sleep(2000);
         }
         static public void TearDown()
