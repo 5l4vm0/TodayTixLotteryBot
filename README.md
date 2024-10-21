@@ -5,6 +5,12 @@ TodayTix Lottery Bot is an application designed to automatically sign up for Tod
 
 This project aims to simplify and automate the ticket application process for the user, reducing the manual effort required to enter multiple lotteries.
 
+https://github.com/user-attachments/assets/ff6c7823-000d-41bc-adf6-f3922eed7cc1
+
+
+[YoutubeLink](https://youtu.be/k57s3IfegSQ)
+
+
 ## Architecture and Design
 The project is made up of two key components:
 * Appium Test Automation: Utilises Appium to automate interactions with the TodayTix Android app on a virtual or connected Android device.
@@ -93,4 +99,4 @@ To run the bot and start automating ticket signups:
 Future improvements for the bot include:
 * Enhancing error handling and stability of the bot during sign-up processes.
 * Expanding to support more platforms and iOS devices.
-* Check for winning lottery automatically
+* Check for winning lottery email automatically
