@@ -41,6 +41,7 @@ namespace LotteryBot
         HideKeyboardOnSearchScreen,
         ClickOnAccountAfterSignUp,
         ClickOnAccountSettings,
+        ScrollDownAccountSettingsPage,
         ClickOnLogOut,
         FinishedLotterySignUp,
     }
@@ -52,13 +53,15 @@ namespace LotteryBot
 
         private static int _targetSingUpAmount = 10;
         private static int _currentSingUpAmount = 0;
-        private static int _attemptEmailNum = 110;
+        private static int _attemptEmailNum = 130;
         private static string _originalEmailAddress = "usvienaspirmas+test";
         private static string _modifiedEmailAddress = "";
         private static string _logInCode;
+
         private static SignUpStage _nextAction = SignUpStage.StartTodayTix;
 
         private static string _showName = "Harry Potter";
+        private static string _searchScrollKeyword = "£40 Friday Forty";
         private static string _numberOfTicketsToWin = "2";
 
         static void Main(string[] args)
@@ -207,6 +210,10 @@ namespace LotteryBot
                             break;
                         case SignUpStage.ClickOnAccountSettings:
                             ClickOnAccountSettings();
+                            _nextAction = SignUpStage.ScrollDownAccountSettingsPage;
+                            break;
+                        case SignUpStage.ScrollDownAccountSettingsPage:
+                            ScrollDownAccountSettingsPage();
                             _nextAction = SignUpStage.ClickOnLogOut;
                             break;
                         case SignUpStage.ClickOnLogOut:
@@ -377,7 +384,7 @@ namespace LotteryBot
 
         static void ScrollDownToLotteryButton()
         {
-            ScrollUntilElementIsFound("£40 Friday Forty", -500);
+            ScrollUntilElementIsFound(_searchScrollKeyword, -500);
         }
 
         static void ClickOnEnterLottery()
@@ -445,7 +452,7 @@ namespace LotteryBot
 
         static void ScrollUpOnShowScreen()
         {
-            ScrollUntilElementIsFound("£40 Friday Forty", 1000);
+            ScrollUntilElementIsFound(_searchScrollKeyword, 1000);
         }
 
         static void ClickOnBackButton()
@@ -457,6 +464,11 @@ namespace LotteryBot
         static void ClickOnAccountSettings()
         {
             _driver.FindElement(By.XPath("//*[@content-desc='Account Settings icon']")).Click();
+        }
+
+        static void ScrollDownAccountSettingsPage()
+        {
+            ScrollUntilElementIsFound("Full name", -1000);
         }
 
         static void ClickOnLogOut()

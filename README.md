@@ -1,24 +1,57 @@
-### Requirements
+# TodayTix Lottery Bot
 
-* Install Appium - https://appium.io/docs/en/2.11/quickstart/
-    * After installing JDK 9, and Android Studio set the ANDROID_HOME and JAVA_HOME directories to the installed paths
+## About The Project
+TodayTix Lottery Bot is an application designed to automatically sign up for TodayTix lottery tickets, increasing your chances of winning a lottery ticket for theatre play. It utilises Appium to interact with the TodayTix mobile app and automates the ticket application process on an Android device.
+
+This project aims to simplify and automate the ticket application process for the user, reducing the manual effort required to enter multiple lotteries.
+
+## Architecture and Design
+The project is made up of two key components:
+* Appium Test Automation: Utilises Appium to automate interactions with the TodayTix Android app on a virtual or connected Android device.
+* Google Cloud Platform (GCP) Integration: Uses GCP's Gmail API to fetch relevant emails and metadata related to TodayTix lottery results.
+
+The bot runs on a virtual device using Appium for automation. It installs the TodayTix APK on the device and proceeds to interact with the app to sign up for lottery tickets. Google Cloud Platform (GCP) is used to manage email access via the Gmail API, allowing the bot to handle sign up codes related to the TodayTix account sign up process.
+
+## Built With
+* Appium: Mobile app automation framework.
+* .NET Core: The main development framework.
+* GCP: Google Cloud Platform integration for managing Gmail API.
+* Android Studio: For Android device emulation and SDK management.
+
+## Getting Started
+Follow these steps to get a local copy up and running.
+
+### Prerequisites
+
+* Install JDK 9
+* Install Android Studio
+    * After installing JDK 9 and Android Studio, set the ANDROID_HOME and JAVA_HOME environment variables to the installed paths
     * From Android Studio, install Android SDK Command Line from Android Studio
+* Install [Appium](https://appium.io/docs/en/2.11/quickstart/)
 * Google Cloud Platform (GCP) account
+    * Go to Google Cloud Platform (GCP)
+    * Enable GCP Gmail API in API and Services
+    * Go to Credentials > Create Credentials > OAuth Client ID
+    * Give it appropriate permissions to read the emails and metadata
+    * Create the credentials
+    * Download credentials client_secret.json (It will be named something like client_secret_123456789-blahblahblahblah.apps.googleusercontent.com.json, rename it to client_secret.json)
+    * Put the client_secret.json inside `LotteryBot\LotteryBot\credentials\client_secret.json`
+* Install TodayTix APK on an emulated or connected device using adb.  
+    * If installing onto the emulated device, you can use the `adb install-multiple <multiple paths to apks>`/`adb install <path to apk>` commands
 
+### Running Tests
 
-### Setup
+To test if Appium is correctly configured:
 
-#### Test that appium works
-
-* Run appium server
+1. Run the Appium server:
 
     ```
     # on Terminal instance 1
     appium
     ```
 
-* Run Android virtual device
-    * I had to enable developer settings in the emulated device
+2. Run Android virtual device
+    * Need to enable developer settings in the emulated device
     * `adb devices` should return your emulated
 
     ```
@@ -27,63 +60,37 @@
     emulator-5554   device
     ```
 
-* Install TodayTix APK on the emulated/connected device
-    * If installing onto the emulated device, you can use the `adb install-multiple <multiple paths to apks>`/`adb install <path to apk>` commands
-
-* Test that it works as expected
+4. Run the test script
 
     ```
     # on Terminal instance 2
     cd LotteryBot\appiumtest
     dotnet test
-      Determining projects to restore...
-      All projects are up-to-date for restore.
-      appiumtest -> C:\Users\Drum\OneDrive\workarea\programming\2024\LotteryBot\LotteryBot\appiumtest\bin\Debug\net8.0\appiumtest.dll
-    Test run for C:\Users\Drum\OneDrive\workarea\programming\2024\LotteryBot\LotteryBot\appiumtest\bin\Debug\net8.0\appiumtest.dll (.NETCoreApp,Version=v8.0)
-    Microsoft (R) Test Execution Command Line Tool Version 17.8.0 (x64)
-    Copyright (c) Microsoft Corporation.  All rights reserved.
-
-    Starting test execution, please wait...
-    A total of 1 test files matched the specified pattern.
-
-    Passed!  - Failed:     0, Passed:     1, Skipped:     0, Total:     1, Duration: 2 s - appiumtest.dll (net8.0)
     ```
 
+## Running the lottery bot
 
-#### Setup GCP Gmail API Credentials
-
-* Go to Google Cloud Platform (GCP)
-* Enable GCP Gmail API in API and Services
-* Go to Credentials > Create Credentials > OAuth Client ID
-* Give it appropriate permissions to read the emails and metadata
-* Create the credentials
-* Download credentials client_secret.json (It will be named something like client_secret_123456789-blahblahblahblah.apps.googleusercontent.com.json, rename it to client_secret.json)
-* Put the client_secret.json inside `LotteryBot\LotteryBot\credentials\client_secret.json`
-
-
-
-#### Running the lottery bot
-
-* Make sure that you have your emulated device running
+To run the bot and start automating ticket signups:
+1. Ensure the virtual or physical device is running.
+2. To configure the lottery bot with your specific preferences, you'll need to modify certain values in the `Program.cs` file:
+    * `_originalEmailAddress`: Set this to your email address. 
+    * `_targetSingUpAmount`: Set this to the number of times you want the bot to sign up for the lottery.
+    * `_attemptEmailNum`: Specify the starting email number that the bot should start with.
+    * `_showName`: Enter the name of the show you want to sign up for in the lottery.
+    * `_numberOfTicketsToWin`: Set the number of tickets you wish to sign up for.
+2. Execute through
     ```
-    # from LotteryBot/LotteryBot
     dotnet run
     ```
 
-### Next steps
+## Limitations
+* The bot currently works only on Android devices via an Appium connection.
+* Google Cloud Platform integration is limited to Gmail API for retrieving lottery results, and no other services are utilised.
+* Requires manual APK installation on emulated/connected Android devices.
 
-#### Sign-up
-* Click "Account" in bottom right corner
-* Type in email address
-* Click Continue
-* Type "First name" & "Last name"
-* Click "Send link"
-* Check email for subject "Your one-time access code: xxxxxx" and extract the code from the subject
-* Type in code into TodayTix
-* Reject "App activity usage" by clicking "Rejact all"
-* Click on "Search"
-* Click on "Search events in London"
-* Type "Harry Potter"
-* Click "Harry Potter And The Cursed Child"
-* Click Set Alert
-...
+
+## Roadmap
+Future improvements for the bot include:
+* Enhancing error handling and stability of the bot during sign-up processes.
+* Expanding to support more platforms and iOS devices.
+* Check for winning lottery automatically
